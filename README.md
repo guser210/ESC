@@ -3,8 +3,9 @@ ESC - Electronic Speed Controller for BLDC Motors.
 
 # More updates coming soon...
 
-![PCB Front | width=100px](/images/ESC_v1.1_front_small.jpg)
-
+<div style="width:60% ; height:60%">
+![PCB Front](/images/ESC_v1.1_front_small.jpg)
+</div>
 
 ![PCB Front](/images/ESC_v1.1_back_small.jpg)
 
