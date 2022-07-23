@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2022-06-29T21:21:11Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "ESC_G0_DevBoard_V1.1"
+        },
+        "Owner": "Gil Vargas <gilv210@yahoo.com>",
+        "Size": {
+            "X": 56.947,
+            "Y": 27.041
+        }
+    }
+}

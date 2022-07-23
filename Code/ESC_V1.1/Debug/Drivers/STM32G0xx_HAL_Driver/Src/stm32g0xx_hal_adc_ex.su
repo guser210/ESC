@@ -1,0 +1,17 @@
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:2209:22:LL_ADC_SetCalibrationFactor	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:2225:26:LL_ADC_GetCalibrationFactor	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4486:22:LL_ADC_DisableInternalRegulator	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4518:22:LL_ADC_Enable	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4538:22:LL_ADC_Disable	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4557:26:LL_ADC_IsEnabled	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4601:22:LL_ADC_StartCalibration	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4617:26:LL_ADC_IsCalibrationOnGoing	16	static
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_adc.h:4684:26:LL_ADC_REG_IsConversionOngoing	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:101:19:HAL_ADCEx_Calibration_Start	48	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:220:10:HAL_ADCEx_Calibration_GetValue	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:236:19:HAL_ADCEx_Calibration_SetValue	24	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:279:13:HAL_ADCEx_LevelOutOfWindow2Callback	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:294:13:HAL_ADCEx_LevelOutOfWindow3Callback	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:310:13:HAL_ADCEx_EndOfSamplingCallback	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:325:13:HAL_ADCEx_ChannelConfigReadyCallback	16	static
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c:348:19:HAL_ADCEx_DisableVoltageRegulator	24	static
