@@ -12,6 +12,7 @@ extern "C"
 extern TIM_HandleTypeDef htim1;		// Signal input capture.
 extern TIM_HandleTypeDef htim3;		// PWM driver.
 extern TIM_HandleTypeDef htim7;		// Generic timer.
+
 extern TIM_HandleTypeDef htim17;	// commutator bump timer.
 extern  ADC_HandleTypeDef hadc1;	// battery voltages.
 }
@@ -156,8 +157,8 @@ inline void commutate()
 	// enable wakeup with interrupt.
 	EXTI->IMR1 = resetImrFlags | zcOff[powerStep];
 	// clear any zc pending interrupts.
-	EXTI->FPR1 = zcPinOn;//(ZC_A_Pin | ZC_B_Pin | ZC_C_Pin);
-	EXTI->RPR1 = zcPinOn; //(ZC_A_Pin | ZC_B_Pin | ZC_C_Pin);
+	EXTI->FPR1 = zcPinOn; ;
+	EXTI->RPR1 = zcPinOn;  ;
 	// reset timer17 for bump motor.
 	TIM17->CNT = 0;
 }
@@ -212,20 +213,40 @@ uint16_t divClosest( uint16_t a, uint16_t b)
 }
 
 volatile uint8_t frequencyType = 0;// 0 = Proshot, 1=PWM.
+uint16_t pwm[3] = {0};
+uint8_t transmitterDirection = 0;
+uint8_t masterDirection = 0;
+volatile uint16_t pwm1  = 0;
+volatile uint16_t pwm2  = 0;
 void processDmaSignalPWM()
 {
 	newDmaSignal = 0;
 
 	uint8_t found = 0;
 
-	uint16_t pwm1 = divClosest( dmaSignal[2] - dmaSignal[1] , 8);
-	uint16_t pwm2 = divClosest(dmaSignal[1] - dmaSignal[0] , 8);
+	pwm1 = divClosest( dmaSignal[2] - dmaSignal[1] , 8);
+	pwm2 = divClosest(dmaSignal[1] - dmaSignal[0] , 8);
+
+	pwm[0] = pwm1;
+	pwm[1] = pwm2;
+	pwm[2] = divClosest(pwm1 + pwm2, 1000);
+
+	if( pwm[2] == 5)
+		transmitterDirection = masterDirection;
+	else if( pwm[2] == 6)
+	{
+		if( masterDirection == 0)
+		transmitterDirection = 1;
+		else
+			transmitterDirection = 0;
+	}
 
 	pwm1 = pwm1 < pwm2 ? pwm1 : pwm2;
 
-	if( pwm1 < 900 || pwm1 > 2010)
-	{
+	if( pwm1 < 700 || pwm1 > 2010)
+	{// Signal not PWM try Proshot1000.
 		frequencyType = 0;
+
 		return;
 	}
 
@@ -237,19 +258,19 @@ void processDmaSignalPWM()
 
 
 }
+
 void processDmaSignal()
 {
 	newDmaSignal = 0;
 
 	for( int index = 0; index < 15; index++)
-		dmaSignalNormalized[index] = (dmaSignal[index + 1] - dmaSignal[index]) - 8;
+		dmaSignalNormalized[index] = divClosest( dmaSignal[index + 1] - dmaSignal[index], 8) - 8;
 
-	uint16_t pwm1 = divClosest( dmaSignal[2] - dmaSignal[1] , 8);
-	uint16_t pwm2 = divClosest(dmaSignal[1] - dmaSignal[0] , 8);
 
-	pwm1 = pwm1 < pwm2 ? pwm1: pwm2;
-	if( pwm1 > 998 && pwm1 < 2010)
-	{
+	if(dmaSignalNormalized[0] > 1000 &&
+			dmaSignalNormalized[1] > 1000 &&
+			dmaSignalNormalized[2] > 1000)
+	{ // Signal not Proshot1000 try PWM.
 		frequencyType = 1;
 		return;
 	}
@@ -259,14 +280,10 @@ void processDmaSignal()
 		if( dmaSignalNormalized[index] < 100)
 			continue;
 
-		uint16_t speed = dmaSignalNormalized[index + 1]<<6 |
+		motorSpeed = dmaSignalNormalized[index + 1]<<6 |
 					 dmaSignalNormalized[index + 3]<<2 |
 					 dmaSignalNormalized[index + 5]>>2;
-		if(  speed > 2000)
-			return; // invalid value.
 
-
-		motorSpeed = speed > 0 && speed < 1025 ? speed : 0;
 		break;
 	}
 
@@ -392,6 +409,9 @@ void writeMemory(unsigned char* data, int size, int location){
 	ret = HAL_FLASH_Unlock();
 
 }
+
+volatile int motorSpeedDirection = 1;
+volatile uint8_t direction = 0;
 void maincpp()
 {
 	HAL_ADCEx_Calibration_Start(&hadc1);
@@ -403,51 +423,120 @@ void maincpp()
 	setup();
 
 
-	uint8_t direction = 0;
+	for( int i= 0; i < 10; i++)
+	{
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		HAL_Delay(100);
+	}
+
 
 	uint8_t memorySetting[1] = {0};
-//
-//	writeMemory(data, 1, 0);
 
 	readMemory(memorySettings, sizeOfSettings, 0);
 	if( memorySettings[0] != 1)
 		memorySettings[0] = 0;
 
-	reverse = memorySettings[0];
+	masterDirection = memorySetting[0];
+	direction = masterDirection;
+	reverse = masterDirection;
 
 	frequencyType = 0;
 
+	uint8_t testMotor = 0;
+
 	while(1)
 	{
+		//motorSpeed = 25;
+
+		uint8_t testCounter = 0;
+
+
+
 		if((REV_GPIO_Port->IDR & REV_Pin) == 0)
 		{// switch direction when button pressed.
-			LED_GPIO_Port->BRR = LED_Pin;
-			HAL_Delay(300);
-			LED_GPIO_Port->BSRR = LED_Pin;
 
-			if( direction == 1)
+			LED_GPIO_Port->BSRR = LED_Pin;
+			HAL_Delay(500);
+			LED_GPIO_Port->BRR = LED_Pin;
+
+			if( masterDirection == 1)
 				direction = 0;
 			else
 				direction = 1;
 
 			memorySetting[0] = direction;
+			masterDirection = direction;
 			writeMemory(memorySetting, 1, 0);
 
+			if(testMotor )
+			{
+				motorSpeed = 0;
+				motorSpeedCurrent = 0;
+				setDutyCycle(0);
+			}
+			testCounter = 0;
+			testMotor = 0;
+
 			while((REV_GPIO_Port->IDR & REV_Pin) == 0)
-				HAL_Delay(100);
+			{
+
+				if( testCounter++ > 30)
+				{
+
+					testMotor = 1;
+					while((REV_GPIO_Port->IDR & REV_Pin) == 0)
+					{
+						HAL_Delay(50);
+						HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+					}
+				}
+
+				HAL_Delay(50);
+			}
 			LED_GPIO_Port->BRR = LED_Pin;
 		}
 
 		if( reverse == 1)
 			LED_GPIO_Port->BSRR = LED_Pin;
+		else
+			LED_GPIO_Port->BRR = LED_Pin;
 
-		if( newDmaSignal)
+
+
+		if( newDmaSignal || testMotor)
 		{
-			if( frequencyType == 0)
-				processDmaSignal();
+			if( !testMotor)
+			{
+				if(frequencyType == 0)
+				{
+					processDmaSignal();
+				}
+				else
+				{
+					processDmaSignalPWM();
+					if( transmitterDirection != direction)
+						direction = transmitterDirection;
+				}
+			}
 			else
-				processDmaSignalPWM();
+			{
+				motorSpeed += motorSpeedDirection;
+				HAL_Delay(30);
 
+				if( motorSpeed > 300 || motorSpeed <= 0)
+				{
+
+					motorSpeedDirection *= -1;
+					if( motorSpeedDirection == 1)
+					{
+						if( direction == 1)
+							direction = 0;
+						else
+							direction = 1;
+					}
+				}
+
+			}
 //			if( GPIOA->IDR & REV_Pin )
 //				direction = 1;
 //			else
@@ -472,10 +561,21 @@ void maincpp()
 
 			if( motorSpeed != motorSpeedCurrent)
 			{
-				if( (motorSpeed - motorSpeedCurrent) > 20)
-					motorSpeedCurrent += 20;
+				if( motorSpeedCurrent < 120)
+				{
+					if ((motorSpeed - motorSpeedCurrent) > 2)
+						motorSpeedCurrent += 5;
+					else
+						motorSpeedCurrent = motorSpeed;
+
+				}
 				else
-					motorSpeedCurrent = motorSpeed;
+				{
+					if ((motorSpeed - motorSpeedCurrent) > 20)
+						motorSpeedCurrent += 20;
+					else
+						motorSpeedCurrent = motorSpeed;
+				}
 
 				if( motorSpeedCurrent < 150 )
 				{
@@ -496,11 +596,13 @@ void maincpp()
 
 			if( frequencyType == 1) // PWM
 			{
+				TIM1->PSC = 8-1;
 				TIM1->CNT = 0;
 				HAL_TIM_IC_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t*)dmaSignal, 3);
 			}
 			else
 			{
+				TIM1->PSC = 0;
 				TIM1->CNT = 0;
 				HAL_TIM_IC_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t*)dmaSignal, 16);
 			}

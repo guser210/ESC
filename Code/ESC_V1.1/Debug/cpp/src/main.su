@@ -1,14 +1,14 @@
-../cpp/src/main.cpp:31:6:void setDutyCycle(uint16_t)	16	static
-../cpp/src/main.cpp:110:13:void commutate()	8	static
-../cpp/src/main.cpp:167:6:void HAL_GPIO_EXTI_Rising_Callback(uint16_t)	16	static
-../cpp/src/main.cpp:180:6:void HAL_GPIO_EXTI_Falling_Callback(uint16_t)	16	static
-../cpp/src/main.cpp:195:6:void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef*)	16	static
-../cpp/src/main.cpp:209:10:uint16_t divClosest(uint16_t, uint16_t)	16	static
-../cpp/src/main.cpp:215:6:void processDmaSignalPWM()	24	static
-../cpp/src/main.cpp:240:6:void processDmaSignal()	32	static
-../cpp/src/main.cpp:297:6:void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef*)	16	static
-../cpp/src/main.cpp:303:6:void setup()	8	static
-../cpp/src/main.cpp:340:17:uint16_t map(int, int, int, int, int)	24	static
-../cpp/src/main.cpp:355:6:void readMemory(unsigned char*, int, int)	32	static
-../cpp/src/main.cpp:366:6:void writeMemory(unsigned char*, int, int)	72	static
-../cpp/src/main.cpp:395:6:void maincpp()	32	static
+../cpp/src/main.cpp:32:6:void setDutyCycle(uint16_t)	16	static
+../cpp/src/main.cpp:111:13:void commutate()	8	static
+../cpp/src/main.cpp:168:6:void HAL_GPIO_EXTI_Rising_Callback(uint16_t)	16	static
+../cpp/src/main.cpp:181:6:void HAL_GPIO_EXTI_Falling_Callback(uint16_t)	16	static
+../cpp/src/main.cpp:196:6:void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef*)	16	static
+../cpp/src/main.cpp:210:10:uint16_t divClosest(uint16_t, uint16_t)	16	static
+../cpp/src/main.cpp:221:6:void processDmaSignalPWM()	16	static
+../cpp/src/main.cpp:262:6:void processDmaSignal()	16	static
+../cpp/src/main.cpp:314:6:void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef*)	16	static
+../cpp/src/main.cpp:320:6:void setup()	8	static
+../cpp/src/main.cpp:357:17:uint16_t map(int, int, int, int, int)	24	static
+../cpp/src/main.cpp:372:6:void readMemory(unsigned char*, int, int)	32	static
+../cpp/src/main.cpp:383:6:void writeMemory(unsigned char*, int, int)	72	static
+../cpp/src/main.cpp:415:6:void maincpp()	32	static
