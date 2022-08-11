@@ -1,15 +1,15 @@
-../cpp/src/main.cpp:32:6:void setDutyCycle(uint16_t)	16	static
-../cpp/src/main.cpp:111:13:void commutate()	8	static
-../cpp/src/main.cpp:168:6:void HAL_GPIO_EXTI_Rising_Callback(uint16_t)	16	static
-../cpp/src/main.cpp:181:6:void HAL_GPIO_EXTI_Falling_Callback(uint16_t)	16	static
-../cpp/src/main.cpp:196:6:void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef*)	16	static
-../cpp/src/main.cpp:210:10:uint16_t divClosest(uint16_t, uint16_t)	16	static
-../cpp/src/main.cpp:223:6:void processDmaSignalPWM()	16	static
-../cpp/src/main.cpp:265:6:void processDmaSignal()	24	static
-../cpp/src/main.cpp:320:6:void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef*)	16	static
-../cpp/src/main.cpp:326:6:void setup()	8	static
-../cpp/src/main.cpp:363:17:uint16_t map(int, int, int, int, int)	24	static
-../cpp/src/main.cpp:378:6:void readMemory(unsigned char*, int, int)	32	static
-../cpp/src/main.cpp:389:6:void writeMemory(unsigned char*, int, int)	72	static
-../cpp/src/main.cpp:421:6:void detechFrequency()	8	static
-../cpp/src/main.cpp:436:6:void maincpp()	40	static
+../cpp/src/main.cpp:34:6:void setDutyCycle(uint16_t)	16	static
+../cpp/src/main.cpp:115:13:void commutate()	8	static
+../cpp/src/main.cpp:173:6:void HAL_GPIO_EXTI_Rising_Callback(uint16_t)	16	static
+../cpp/src/main.cpp:186:6:void HAL_GPIO_EXTI_Falling_Callback(uint16_t)	16	static
+../cpp/src/main.cpp:201:6:void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef*)	16	static
+../cpp/src/main.cpp:215:10:uint16_t divClosest(uint16_t, uint16_t)	16	static
+../cpp/src/main.cpp:228:6:void processDmaSignalPWM()	16	static
+../cpp/src/main.cpp:270:6:void processDmaSignal()	24	static
+../cpp/src/main.cpp:325:6:void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef*)	16	static
+../cpp/src/main.cpp:331:6:void setup()	8	static
+../cpp/src/main.cpp:368:17:uint16_t map(int, int, int, int, int)	24	static
+../cpp/src/main.cpp:383:6:void readMemory(unsigned char*, int, int)	32	static
+../cpp/src/main.cpp:394:6:void writeMemory(unsigned char*, int, int)	72	static
+../cpp/src/main.cpp:426:6:void detechFrequency()	8	static
+../cpp/src/main.cpp:442:6:void maincpp()	40	static

@@ -13,6 +13,8 @@ extern TIM_HandleTypeDef htim1;		// Signal input capture.
 extern TIM_HandleTypeDef htim3;		// PWM driver.
 extern TIM_HandleTypeDef htim7;		// Generic timer.
 
+extern TIM_HandleTypeDef htim6;		// RPM.
+
 extern TIM_HandleTypeDef htim17;	// commutator bump timer.
 extern  ADC_HandleTypeDef hadc1;	// battery voltages.
 }
@@ -108,9 +110,12 @@ const uint8_t rising[2][6] = {{1,0,1,0,1,0},
 volatile uint8_t reverse = 0;
 
 #define zcPinOn ZC_A_Pin | ZC_B_Pin | ZC_C_Pin
+volatile uint16_t commutationCNT  = 0;
+
 inline void commutate()
 {
-
+	commutationCNT = TIM6->CNT;
+	TIM6->CNT = 0;
 	// go to next power step.
 	powerStepCurrent++;
 	powerStepCurrent %= 6;
@@ -433,11 +438,15 @@ void detechFrequency()
 
 volatile int motorSpeedDirection = 1;
 volatile uint8_t direction = 0;
+volatile uint32_t eRPM= 0;
 void maincpp()
 {
 	HAL_ADCEx_Calibration_Start(&hadc1);
 	HAL_ADC_Start(&hadc1);
 	if( HAL_TIM_Base_Start(&htim7) != HAL_OK)
+		Error_Handler();
+
+	if( HAL_TIM_Base_Start(&htim6) != HAL_OK) // RPM
 		Error_Handler();
 
 	HAL_Delay(500);
@@ -516,6 +525,8 @@ void maincpp()
 	{
 		//motorSpeed = 25;
 
+
+		eRPM = (((1000000/(commutationCNT/32))*60)/7);///6; /6 will give you RPM
 		uint8_t testCounter = 0;
 
 		if((REV_GPIO_Port->IDR & REV_Pin) == 0)
@@ -624,10 +635,17 @@ void maincpp()
 
 			if( motorSpeed != motorSpeedCurrent)
 			{
-				if( motorSpeedCurrent < 120)
+				if( motorSpeedCurrent > 200 && eRPM < 5000)
+				{
+					motorSpeedCurrent = 0;
+					setDutyCycle(motorSpeedCurrent);
+					HAL_Delay(20);
+
+				}
+				if( motorSpeedCurrent < 50)
 				{
 					if ((motorSpeed - motorSpeedCurrent) > 2)
-						motorSpeedCurrent += 5;
+						motorSpeedCurrent += 20;
 					else
 						motorSpeedCurrent = motorSpeed;
 
@@ -635,7 +653,7 @@ void maincpp()
 				else
 				{
 					if ((motorSpeed - motorSpeedCurrent) > 20)
-						motorSpeedCurrent += 20;
+						motorSpeedCurrent += 100;
 					else
 						motorSpeedCurrent = motorSpeed;
 				}
