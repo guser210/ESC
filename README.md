@@ -1,7 +1,8 @@
 # ESC
 ESC - Electronic Speed Controller for BLDC Motors.
 
-
+# You can find more information on the link below,
+https://discord.gg/pByahDupYP
 
 Component list: 
 
